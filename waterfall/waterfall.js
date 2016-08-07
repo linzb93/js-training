@@ -2,17 +2,27 @@
     var d = {
         cell: 'li',       //进行布局的列表元素
         spaceX: 0,        //水平方向的间距
-        spaceY: 0,        //竖直方向的间距
-        animation: false  //是否使用动画
+        spaceY: 0        //竖直方向的间距
     };
     function WaterFall($this, option) {
         this.$this = $this;
         var o = $.extend({}, d, option);
         this.o = o;
         this.blockW = this.$this.width();
-        this.cell = this.$this.find(this.o.cell);
-        this.cellW = this.cell.outerWidth();
+        this.perCell = this.$this.find(this.o.cell);
+        this.cellW = this.perCell.outerWidth();
+
         this.col = parseInt(this.blockW / this.cellW);
+        this.heightArr = [];  //每一列的高度
+        this.fallArr = [];    //每一列拥有的列表元素的数量
+        initArr(this.heightArr, this.col);
+        initArr(this.fallArr, this.col);
+        this.init();
+    }
+    function initArr(arr, length) {
+        for(var i = 0; i < length; i++) {
+            arr[i] = 0;
+        }
     }
     function min(arr) {
         var length = arr.length,
@@ -33,7 +43,7 @@
         var length = arr.length,
                 maxVal = arr[0],
                 index = 0;
-            for(var i = 1; i< length; i++) {
+            for(var i = 1; i < length; i++) {
                 if (maxVal < arr[i]) {
                     maxVal = arr[i];
                     index = i;
@@ -46,15 +56,35 @@
     }
     $.extend(WaterFall.prototype, {
         init: function() {
-            this.cell.addClass('waterfall-cell');
-        }
-        calculate: function() {
-            var heightArr = [];
-            heightArr.length = this.col;
-            this.cell.each(function() {
-            })
+            this.perCell.addClass('waterfall-cell');
+            this.calculate();
         },
-        layout: function() {
+        calculate: function() {
+            var that = this,
+            maxHeight = 0;
+            this.perCell.each(function() {
+                var minIndex = min(that.heightArr).index;
+                that.fallArr[minIndex]++;
+                that.layout($(this), minIndex);
+                that.heightArr[minIndex] += ($(this).outerHeight() + that.o.spaceY);
+
+            });
+            maxHeight = max(this.heightArr).maxVal;
+            this.$this.height(maxHeight);
+        },
+        layout: function(ele, num) {
+            var that = this;
+            if (this.heightArr[num] == 0) {
+                ele.css({
+                    'left': (that.cellW + that.o.spaceX) * num + 'px',
+                    'top': 0
+                });
+            } else {
+                ele.css({
+                    'left': (that.cellW + that.o.spaceX) * num + 'px',
+                    'top': that.heightArr[num] + that.o.spaceY + 'px'
+                });
+            }
         }
     });
 
