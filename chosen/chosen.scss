@@ -1,0 +1,18 @@
+.chosen-select {
+    &.on {
+        .chosen-select-list {
+            display: block;
+        }
+    }
+}
+
+.chosen-select-main {
+    span {}
+
+    i {}
+}
+
+.chosen-select-list {
+    display: none;
+    li {}
+}
