@@ -3,9 +3,9 @@
 */
 (function($) {
     var d = {
-        width: 150,
         placeholder: '请选择'
     };
+
     function Chosen($this, option) {
         this.$this = $this;
         var o = $.extend({}, d, option);
@@ -15,13 +15,19 @@
             value: [],
             text: []
         };
+
+        //init
+        this.handlePrevSelect();
+        this.createSelectBox();
+        this.bindEvent();
     }
 
     Chosen.prototype.handlePrevSelect = function() {
+        var that = this;
         this.$this.hide();
         this.$this.children().each(function() {
-            this.selectArr.text.push($(this).text());
-            this.selectArr.value.push($(this).attr('value'));
+            that.selectArr.text.push($(this).text());
+            that.selectArr.value.push($(this).attr('value'));
         });
     };
 
@@ -38,14 +44,19 @@
         }
         selectHtml += '</ul>';
         selectHtml += '</div>';
-        this.$this.append(selectHtml);
+        this.$this.after(selectHtml);
     };
 
     Chosen.prototype.bindEvent = function() {
-        this.$this.find('chosen-select-main').on('click', function() {
-            $(this).parent().addClass('on');
+        this.$this.next().find('.chosen-select-main').on('click', function() {
+            $(this).parent().toggleClass('on');
         });
+        this.$this.next().find('li').on('click', function() {
+            var chosenText = $(this).text();
+            $(this).parents('.chosen-select').removeClass('on').find('span').text(chosenText);
+        })
     };
+
     $.fn.chosen = function(option) {
         new Chosen($(this), option);
     };

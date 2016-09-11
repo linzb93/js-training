@@ -1,0 +1,70 @@
+@charset "UTF-8";
+/*
+ * ---------------------------------
+ * chosen.scss
+ * ---------------------------------
+ */
+/* 鍙橀噺 */
+/* --------------------------------- */
+/* mixin*/
+/* --------------------------------- */
+/* 鏍峰紡 */
+/* --------------------------------- */
+/* reset */
+ul {
+  padding: 0; }
+
+li {
+  list-style-type: none; }
+
+/* main */
+.chosen-select {
+  cursor: pointer;
+  position: relative;
+  float: left;
+  margin-right: 20px;
+  width: 120px;
+  height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 5px; }
+  .chosen-select.on i {
+    height: 0;
+    width: 0;
+    border: 5px solid;
+    border-top-width: 0;
+    border-color: transparent transparent #999; }
+  .chosen-select.on .chosen-select-list {
+    display: block; }
+
+.chosen-select-main {
+  position: relative;
+  height: 100%; }
+  .chosen-select-main span {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    color: #999;
+    line-height: 40px; }
+  .chosen-select-main i {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    height: 0;
+    width: 0;
+    border: 5px solid;
+    border-bottom-width: 0;
+    border-color: #999 transparent transparent; }
+
+.chosen-select-list {
+  border-radius: 5px;
+  display: none;
+  overflow: hidden;
+  margin: 0 -1px;
+  border: 1px solid #ddd; }
+  .chosen-select-list li {
+    padding-left: 10px;
+    line-height: 1.5; }
+    .chosen-select-list li:hover {
+      background: orange; }
+
+/*# sourceMappingURL=chosen.css.map */

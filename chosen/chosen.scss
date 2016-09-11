@@ -1,5 +1,56 @@
+/*
+ * ---------------------------------
+ * chosen.scss
+ * ---------------------------------
+ */
+
+
+/* 变量 */
+/* --------------------------------- */
+$chosenBorder: 1px solid #eee;
+$chosenRadius: 5px;
+
+
+/* mixin*/
+/* --------------------------------- */
+@mixin tri($dir, $size, $color) {
+    height: 0;
+    width: 0;
+    border: $size solid;
+    border-#{$dir}-width: 0;
+    @if $dir == 'top' {
+        border-color: transparent transparent $color;
+    }@else if $dir == 'bottom' {
+        border-color: $color transparent transparent;
+    }
+}
+
+
+/* 样式 */
+/* --------------------------------- */
+
+/* reset */
+ul {
+    padding: 0;
+}
+
+li {
+    list-style-type: none;
+}
+
+/* main */
 .chosen-select {
+    float: left;
+    position: relative;
+    margin-right: 20px;
+    width: 120px;
+    height: 40px;
+    cursor: pointer;
     &.on {
+        i {
+            @include tri('top', 5px, #999);
+        }
+
         .chosen-select-list {
             display: block;
         }
@@ -7,12 +58,40 @@
 }
 
 .chosen-select-main {
-    span {}
+    position: relative;
+    height: 100%;
+    border: $chosenBorder;
+    @if $chosenRadius != 0 {
+        border-radius: $chosenRadius;
+    }
+    span {
+        position: absolute;
+        top: 0;
+        left: 10px;
+        line-height: 40px;
+        color: #999;
+    }
 
-    i {}
+    i {
+        @include tri('bottom', 5px, #999);
+        position: absolute;
+        top: 50%;
+        right: 10px;
+    }
 }
 
 .chosen-select-list {
     display: none;
-    li {}
+    overflow: hidden;
+    @if $chosenRadius != 0 {
+        border-radius: $chosenRadius;
+    }
+    border: $chosenBorder;
+    li {
+        padding-left: 10px;
+        line-height: 1.5;
+         &:hover{
+            background: orange;
+         }
+    }
 }
