@@ -17,6 +17,10 @@ ul {
 li {
   list-style-type: none; }
 
+select {
+  display: none;
+}
+
 /* main */
 .chosen-select {
   cursor: pointer;

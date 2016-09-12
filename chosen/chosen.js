@@ -58,6 +58,8 @@
     };
 
     $.fn.chosen = function(option) {
-        new Chosen($(this), option);
+        $(this).each(function() {
+            new Chosen($(this), option);
+        });
     };
 })(jQuery);
