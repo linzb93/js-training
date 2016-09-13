@@ -64,6 +64,7 @@ select {
   display: none;
   overflow: hidden;
   margin: 0 -1px;
+  color: #999;
   border: 1px solid #ddd; }
   .chosen-select-list li {
     padding-left: 10px;

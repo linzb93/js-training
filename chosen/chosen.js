@@ -3,7 +3,8 @@
 */
 (function($) {
     var d = {
-        placeholder: '请选择'
+        placeholder: '请选择',
+        option_all: ''
     };
 
     function Chosen($this, option) {
@@ -11,10 +12,7 @@
         var o = $.extend({}, d, option);
         this.o = o;
 
-        this.selectArr = {
-            value: [],
-            text: []
-        };
+        this.selTextArr = [];
 
         //init
         this.handlePrevSelect();
@@ -24,23 +22,34 @@
 
     Chosen.prototype.handlePrevSelect = function() {
         var that = this;
+        var optionAll = this.o.option_all ? this.o.option_all : this.o.placeholder;
         this.$this.hide();
+        this.$this.find('option').first().text(optionAll);
         this.$this.children().each(function() {
-            that.selectArr.text.push($(this).text());
-            that.selectArr.value.push($(this).attr('value'));
+            that.selTextArr.push($(this).text());
         });
     };
 
     Chosen.prototype.createSelectBox = function() {
         var selectHtml = '';
+        var phWord = '';
+        this.$this.find('option').each(function(index) {
+            if ($(this).attr('selected') && $(this).text()) {
+                phWord = $(this).text();
+                return;
+            }
+        });
+        if (!phWord) {
+            phWord = this.o.placeholder;
+        }
         selectHtml += '<div class="chosen-select">';
         selectHtml += '<div class="chosen-select-main">';
-        selectHtml += '<span>' + this.o.placeholder + '</span>';
+        selectHtml += '<span>' + phWord + '</span>';
         selectHtml += '<i></i>';
         selectHtml += '</div>';
         selectHtml += '<ul class="chosen-select-list">';
-        for (var i = 0, length = this.selectArr.text.length; i < length; i++) {
-            selectHtml += '<li data-val=' + this.selectArr.value[i] +'>' + this.selectArr.text[i] + '</li>';
+        for (var i = 0, length = this.selTextArr.length; i < length; i++) {
+            selectHtml += '<li>' + this.selTextArr[i] + '</li>';
         }
         selectHtml += '</ul>';
         selectHtml += '</div>';
@@ -48,12 +57,16 @@
     };
 
     Chosen.prototype.bindEvent = function() {
+        var that = this;
         this.$this.next().find('.chosen-select-main').on('click', function() {
             $(this).parent().toggleClass('on');
         });
         this.$this.next().find('li').on('click', function() {
             var chosenText = $(this).text();
             $(this).parents('.chosen-select').removeClass('on').find('span').text(chosenText);
+            var index = $(this).index();
+            that.$this.find('option').eq(index).attr('selected', true).siblings().removeAttr('selected');
+            that.$this.trigger('change');
         })
     };
 
