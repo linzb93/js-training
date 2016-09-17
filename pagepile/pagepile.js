@@ -1,5 +1,5 @@
 (function($) {
-    $.fn.pagePill = function(option) {
+    $.fn.pagePile = function(option) {
         var d = {
             dir: 'v',
             speed: 500,

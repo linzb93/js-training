@@ -1,63 +1,63 @@
 (function($){
     var d = {
-        scroollBar: null,  //滚动区域
-        scrollArea: null,  //滚动条
+        scroollBar: '',  //滚动区域
+        scrollSlider: '',  //滚动条
         speed: 500,  //滑动速度
-        mouseWheel: false,  //是否支持鼠标滚轮滚动
+        fullScreen: false, //是否是全屏
         perScrollGap: 50,  //每次滚轮滚动的距离
-        resizeOnChange: false  //窗口缩放时是否重置
+        resizeOnChange: false,  //窗口缩放时是否重置
+        resetAfterLoad: false,  //图片加载完成后是否重置
     };
-    function init(option) {
-        var o = $.extend({}, d, option);
-        var that = this;
-        this.block = this.$this,
-        this.scroollBar = $(this.o.scroollBar),
-        this.scrollArea = this.scroollBar.find(this.o.scrollBlock);
-        this.speed = this.o.speed;
-        this.mouseWheel = this.o.mouseWheel;
-        this.perScrollGap = this.o.perScrollGap;
-        this.rate = 0; //滚动区域与可视区域的比
-        var $blockContent = this.block.html();
-        $('<div class="scroller-wrapper"></div>').append($blockContent);
-        this.block.find('img').on('load', function() {
-            that.reset();
 
-        });
-        setStyle();
-        createBar();
-        bindEvent();
-    }
-    function Scroller($this, option) {
+    function Scroll($this, option) {
         this.$this = $this;
-        init.call(this, option);
+        this.o = $.extend({}, d, option);
+        this.scroollBar = $(this.o.scroollBar);
+        this.scrollSlider = $(this.o.scrollSlider);
     }
+
+    //TODO:懒加载下的滚动条重载（不是回到顶部）
+
     $.extend(Scroller.prototype, {
-        setStyle: function(){},
-        createBar: function(){},
-        reset: function() {
-            var $blockHeight = this.block.height() + this.block.css('padding-top') + this.block.css('padding-bottom'),
-            this.scrollArea.height($blockHeight);
-            var $areaHeight = this.scrollArea.height(),
-            $barHeight = this.scroollBar.height();
+        init: function() {
+            var that = this,
+                tempHtml = '<div class="scroller-cont-wrapper"></div>',
+                scrollCont = this.$this.html();
+            this.$this.html(tempHtml);
+            this.wrapper = this.$this.children('scroller-cont-wrapper');
+            this.wrapper.html(tempHtml);
+            if (this.o.fullScreen) {
+                this.$this.innerHeight($(window).height());
+            }
+            this.rate = Math.floor(this.scroollBar.innerHeight() / this.wrapper.innerHeight());
+            if (this.rate <= 1) {
+                this.scroollBar.hide();
+            }
+            if (this.o.resetAfterLoad) {
+                $('img').on('load', function() {
+                    that.init();
+                });
+            }
         },
-        scrollAnimation: function(nextPos) {
-            var contentOffset = nextPos * rate,
-            that = this;
-            this.scrollArea.animate({top: nextPos + 'px'}, that.speed);
-        },
-        bindEvent: function(){
-            var that = this;
-            //监听滚动事件
-            $(document).on("mousewheel DOMMouseScroll", function(e) {
-                e.preventDefault();
-                var value = e.originalEvent.wheelDelta || -e.originalEvent.detail;
+
+        initEvent: function() {
+            //滑块拖拽
+            this.scrollSlider.on('mousedown', function() {
+                $(this).on('mousemove', function() {});
             });
-            //窗口缩放时重置
-            $(window).on('resize', function() {
-                that.reset();
-            })
-        }
+            //鼠标滚轮滚动
+            $(document).on('mousewheel DOMMouseScroll', function(e) {
+                e.preventDefault();
+                (e.originalEvent.wheelDelta || -e.originalEvent.detail) > 0 ?
+            });
+        },
+        scrollTo: function() {
+            var that = this;
+            this.wrapper.stop().animate({top:}, that.o.speed);
+        },
+        cal: function() {}
     });
+
     $.fn.scroller = function(option) {
         new Scroller($(this), option);
     };
