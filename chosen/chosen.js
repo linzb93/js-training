@@ -22,9 +22,7 @@
 
     Chosen.prototype.handlePrevSelect = function() {
         var that = this;
-        var optionAll = this.o.option_all ? this.o.option_all : this.o.placeholder;
         this.$this.hide();
-        this.$this.find('option').first().text(optionAll);
         this.$this.children().each(function() {
             that.selTextArr.push($(this).text());
         });
@@ -33,7 +31,7 @@
     Chosen.prototype.createSelectBox = function() {
         var selectHtml = '';
         var phWord = '';
-        this.$this.find('option').each(function(index) {
+        this.$this.children('option').each(function(index) {
             if ($(this).attr('selected') && $(this).text()) {
                 phWord = $(this).text();
                 return;
@@ -42,6 +40,11 @@
         if (!phWord) {
             phWord = this.o.placeholder;
         }
+
+        var optionAll = this.o.option_all ? this.o.option_all : this.o.placeholder;
+        this.$this.children('option').first().text(optionAll);
+        this.selTextArr.unshift(optionAll);
+
         selectHtml += '<div class="chosen-select">';
         selectHtml += '<div class="chosen-select-main">';
         selectHtml += '<span>' + phWord + '</span>';
@@ -58,14 +61,13 @@
 
     Chosen.prototype.bindEvent = function() {
         var that = this;
-        this.$this.next().find('.chosen-select-main').on('click', function() {
-            $(this).parent().toggleClass('on');
+        this.$this.next().children('.chosen-select-main').on('click', function() {
+            $(this).parent().toggleClass('on').siblings('.chosen-select').removeClass('on');
         });
         this.$this.next().find('li').on('click', function() {
             var chosenText = $(this).text();
             $(this).parents('.chosen-select').removeClass('on').find('span').text(chosenText);
-            var index = $(this).index();
-            that.$this.find('option').eq(index).attr('selected', true).siblings().removeAttr('selected');
+            that.$this.children('option').eq($(this).index()).attr('selected', true).siblings().removeAttr('selected');
             that.$this.trigger('change');
         })
     };
