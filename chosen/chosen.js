@@ -43,7 +43,7 @@
 
         var optionAll = this.o.option_all ? this.o.option_all : this.o.placeholder;
         this.$this.children('option').first().text(optionAll);
-        this.selTextArr.unshift(optionAll);
+        this.selTextArr[0] = optionAll;
 
         selectHtml += '<div class="chosen-select">';
         selectHtml += '<div class="chosen-select-main">';
