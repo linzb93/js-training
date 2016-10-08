@@ -1,10 +1,8 @@
-/*
-
-*/
 (function($) {
     var d = {
         placeholder: '请选择',
-        option_all: ''
+        option_all: '',
+        maxHeight: 0
     };
 
     function Chosen($this, option) {
@@ -19,6 +17,8 @@
         this.createSelectBox();
         this.bindEvent();
     }
+
+    //TODO:选项过多时添加滚动条
 
     Chosen.prototype.handlePrevSelect = function() {
         var that = this;
