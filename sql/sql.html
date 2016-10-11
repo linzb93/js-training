@@ -1,0 +1,27 @@
+<html>
+<head></head>
+<body>
+<script src="sql.js"></script>
+    <script>
+        var demo = [{
+            name: 'Mike',
+            age: 19
+        },
+        {
+            name: 'Jack',
+            age: 30
+        }];
+
+        var mySql = jssql.create(demo);
+
+        mySql.add({
+            name: 'Lee',
+            age: 9
+        });
+
+        mySql.update({age: 13}, {name: 'Mike'});
+
+        document.write(mySql.select('name', {age: 13}));
+    </script>
+</body>
+</html>
