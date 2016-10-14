@@ -1,7 +1,7 @@
 <html>
 <head></head>
 <body>
-<script src="sql.js"></script>
+    <script src="sql.js"></script>
     <script>
         var demo = [{
             name: 'Mike',
@@ -21,7 +21,11 @@
 
         mySql.update({age: 13}, {name: 'Mike'});
 
-        document.write(mySql.select('name', {age: 13}));
+        // mySql.delete({name: 'Jack'});
+
+        // mySql.empty();
+
+        document.write(mySql.select('age', {name: 'Lee'}));
     </script>
 </body>
 </html>

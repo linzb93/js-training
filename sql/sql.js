@@ -5,6 +5,18 @@
         }
     };
 
+    function doQuery(query, db, length) {
+        for(var k in query) {
+            var key1 = k;
+        }
+        for(i = 0; i < length; i++) {
+            if (db[i][key1] === query[key1]) {
+                break;
+            }
+        }
+        return i;
+    }
+
     function Sql(db) {
         this.db = db;
         this.length = db.length;
@@ -16,31 +28,22 @@
             this.length = this.db.length;
         },
         update: function(list, query) {
-            for(var i in query) {
-                var key1 = i;
-            }
-            for(i = 0; i < this.length; i++) {
-                if (this.db[i][key1] === query[key1]) {
-                    break;
-                }
-            }
+            var i = doQuery(query, this.db, this.length);
             for(var j in list) {
                 this.db[i][j] = list[j];
             }
         },
         select: function(key, query) {
-            for(var i in query) {
-                var key1 = i;
-            }
-            for(i = 0; i < this.length; i++) {
-                if (this.db[i][key1] === query[key1]) {
-                    break;
-                }
-            }
+            var i = doQuery(query, this.db, this.length);
             return this.db[i][key];
         },
-        delete: function() {},
-        empty: function() {}
+        delete: function(query) {
+            var i = doQuery(query, this.db, this.length);
+            this.db.splice(i);
+        },
+        empty: function() {
+            this.db = '';
+        }
     };
 
     window.jssql = jssql;
