@@ -1,0 +1,41 @@
+<html>
+<head></head>
+<body>
+    <div id="app"></div>
+    <template id="temp">
+        <dl>
+            <dt>{{title}}</dt>
+            <dd>
+                <a href={{url}} title={{title}}>
+                    <img src={{imgSrc}} alt="">
+                </a>
+                <h3>{{title}}</h3>
+                <p>{{desc}}</p>
+            </dd>
+        </dl>
+    </template>
+    <script src="http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
+    <script src="template.js"></script>
+    <script>
+        var json = [{
+            title: 'abc',
+            url: 'http://www.nd.com.cn',
+            imgSrc: 'http://cn.bing.com/sa/simg/CN_Logo_Gray.png',
+            desc: 'hello'
+        },
+        {
+            title:'efae',
+            url: 'http://www.amazon.cn',
+            imgSrc: 'http://cn.bing.com/sa/simg/CN_Logo_Gray.png',
+            desc: 'h3434ello'
+        },
+        {
+            title: 'er3av',
+            url: 'http://www.qq.com',
+            imgSrc: 'http://cn.bing.com/sa/simg/CN_Logo_Gray.png',
+            desc: 'hbellorett'
+        }];
+        $('#app').html($('#temp').template(json))
+    </script>
+</body>
+</html>
