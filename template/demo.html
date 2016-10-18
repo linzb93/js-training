@@ -9,18 +9,17 @@
                 <a href={{url}} title={{title}}>
                     <img src={{imgSrc}} alt="">
                 </a>
-                <h3>{{title}}</h3>
+                <h3><a href={{url}}>{{title}}</a></h3>
                 <p>{{desc}}</p>
             </dd>
         </dl>
     </template>
-    <script src="http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
     <script src="template.js"></script>
     <script>
         var json = [{
             title: 'abc',
             url: 'http://www.nd.com.cn',
-            imgSrc: 'http://cn.bing.com/sa/simg/CN_Logo_Gray.png',
+            imgSrc: 'http://pic.cnblogs.com/face/928066/20160528155042.png',
             desc: 'hello'
         },
         {
@@ -32,10 +31,11 @@
         {
             title: 'er3av',
             url: 'http://www.qq.com',
-            imgSrc: 'http://cn.bing.com/sa/simg/CN_Logo_Gray.png',
+            imgSrc: 'http://www.cnblogs.com/images/logo_small.gif',
             desc: 'hbellorett'
         }];
-        $('#app').html($('#temp').template(json))
+        var te = document.getElementById("temp");
+        document.getElementById('app').innerHTML = new Template(te, json).render();
     </script>
 </body>
 </html>

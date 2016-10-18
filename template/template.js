@@ -1,31 +1,52 @@
-(function($) {
+(function() {
 
-    function Temp($this, json) {
-        this.$this = $this;
-        this.tempHtml = this.$this.html();
-        this.len = json.length;
-
-        this.getIndex()
+    function wrap(str) {
+        return '{{a}}'.replace('a', str);
     }
 
-    Temp.prototype = {
-        getIndex: function() {
-            var indexArr = this.tempHtml.match(/{{\S*}}/g);
-            var indexArr1 = [];
-            for (var i = 0, len = indexArr.length; i < len; i++) {
-                var temp = indexArr[i].replace(/{{/, '');
-                temp = temp.replace(/}}/, '');
-                indexArr1.push(temp);
+    function unwrap(str) {
+        return str.slice(2,-2);
+    }
+
+    function removeRepeat(arr) {
+        arr = arr.sort();
+        for (var i = 1; i < arr.length; i++) {
+            if (arr[i] === arr[i - 1]) {
+                arr.splice(i, 1);
+                i--;
             }
-            return indexArr1;
+        }
+        return arr;
+    }
+
+    function Template(dom, json, count) {
+        this.json = json;
+        this.count = count || json.length;
+        this.tempHtml = dom.innerHTML;
+    }
+
+    Template.prototype = {
+        getKey: function() {
+            var keyArr = this.tempHtml.match(/{{\S*}}/g);
+            for (var i = 0, len = keyArr.length; i < len; i++) {
+                keyArr[i] = unwrap(keyArr[i]);
+            }
+            return removeRepeat(keyArr);
         },
         render: function() {
-            var keyArr = this.getIndex();
+            var keyArr = this.getKey();
+            var html = '';
+
+            for (var i = 0; i < this.count; i++) {
+                var re = this.tempHtml;
+                for (var j = 0; j < keyArr.length; j++) {
+                    re = re.replace(new RegExp(wrap(keyArr[j]), "g"), this.json[i][keyArr[j]]);
+                }
+                html += re;
+            }
+            return html;
         }
     }
 
-    $.fn.template = function(json) {
-        new Temp($(this), json);
-    };
-
-})(jQuery);
+    window.Template = Template;
+})();
