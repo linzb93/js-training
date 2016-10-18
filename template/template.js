@@ -27,7 +27,7 @@
 
     Template.prototype = {
         getKey: function() {
-            var keyArr = this.tempHtml.match(/{{\S*}}/g);
+            var keyArr = this.tempHtml.match(/{{[^}]*}}/g);
             for (var i = 0, len = keyArr.length; i < len; i++) {
                 keyArr[i] = unwrap(keyArr[i]);
             }
@@ -40,6 +40,10 @@
             for (var i = 0; i < this.count; i++) {
                 var re = this.tempHtml;
                 for (var j = 0; j < keyArr.length; j++) {
+                    console.log(keyArr[j]);
+                    if (!this.json[i][keyArr[j]]) {
+                        throw new Error('There did not exist the key ' + keyArr[j]);
+                    }
                     re = re.replace(new RegExp(wrap(keyArr[j]), "g"), this.json[i][keyArr[j]]);
                 }
                 html += re;
