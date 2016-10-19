@@ -40,7 +40,6 @@
             for (var i = 0; i < this.count; i++) {
                 var re = this.tempHtml;
                 for (var j = 0; j < keyArr.length; j++) {
-                    console.log(keyArr[j]);
                     if (!this.json[i][keyArr[j]]) {
                         throw new Error('There did not exist the key ' + keyArr[j]);
                     }
