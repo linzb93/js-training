@@ -19,6 +19,15 @@
         return arr;
     }
 
+    //avoid XSS
+    function strFormat(str) {
+        return str.replace(/&/g, '&amp;')//&
+                  .replace(/</g, '&lt;')//左尖号
+                  .replace(/>/g, '&gt;')//右尖号
+                  .replace(/"/g, '&quot;')//双引号"
+                  .replace(/'/g, '&#039;');//IE下不支持&apos;'
+    }
+
     function Template(dom, json, count) {
         this.json = json;
         this.count = count || json.length;
@@ -40,10 +49,11 @@
             for (var i = 0; i < this.count; i++) {
                 var re = this.tempHtml;
                 for (var j = 0; j < keyArr.length; j++) {
-                    if (!this.json[i][keyArr[j]]) {
+                    if (this.json[i][keyArr[j]] === 'undefined') {
                         throw new Error('There did not exist the key ' + keyArr[j]);
                     }
-                    re = re.replace(new RegExp(wrap(keyArr[j]), "g"), this.json[i][keyArr[j]]);
+                    var newStr = strFormat(this.json[i][keyArr[j]]);
+                    re = re.replace(new RegExp(wrap(keyArr[j]), "g"), newStr);
                 }
                 html += re;
             }
