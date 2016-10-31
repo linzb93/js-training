@@ -28,13 +28,13 @@
                   .replace(/'/g, '&#039;');//IE下不支持&apos;'
     }
 
-    function Template(dom, json, count) {
+    function TemplateCls(dom, json, count) {
         this.json = json;
         this.count = count || json.length;
         this.tempHtml = dom.innerHTML;
     }
 
-    Template.prototype = {
+    TemplateCls.prototype = {
         getKey: function() {
             var keyArr = this.tempHtml.match(/{{[^}]*}}/g);
             for (var i = 0, len = keyArr.length; i < len; i++) {
@@ -61,5 +61,9 @@
         }
     }
 
-    window.Template = Template;
+    function template(dom, json, count) {
+        return new TemplateCls(dom, json, count).render();
+    }
+
+    window.template = template;
 })();
