@@ -62,3 +62,29 @@
         new Scroller($(this), option);
     };
 }(jQuery));
+
+//滚动条
+(function($) {
+    var $bar = $('.scroll-bar');
+    var $block = $('.scroll-block');
+    var maxMove = $bar.height() - $block.height();
+    $block.on('mousedown', function(e) {
+        var pageTop = e.pageY;
+        $(this).on('mousemove', function(e) {
+            var blockTop = parseInt($(this).css('top'));
+            if (blockTop >=0 && blockTop <= maxMove) {
+                var newPageTop = e.pageY;
+                $(this).css('top', '+=' + parseInt(newPageTop - pageTop));
+                pageTop = newPageTop;
+            }
+        });
+
+        $(this).on('mouseup',function() {
+            $(this).off('mousemove');
+        });
+    });
+
+    $('body').on('mouseup', function() {
+        $block.off('mousemove');
+    });
+})(jQuery);
