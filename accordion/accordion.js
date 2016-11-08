@@ -1,8 +1,9 @@
 (function($) {
     var d = {
-        activeSize: 3,
-        speed: 800,
+        activeSize: 0,
+        speed: 500,
         dir: 'h',
+        css3Support: false,
         beforeAnimation: function() {},
         afterAnimation: function() {}
     };
@@ -15,13 +16,18 @@
         this.$list = this.$this.children();
         this.w = this.$list.width();
         this.curIndex = 0;
+        this.prevIndex = 0;
 
         this.init();
     }
 
     Accordion.prototype = {
         init: function() {
-            this.$list.first().width(this.w * this.o.activeSize).addClass('on');
+            if (this.o.css3Support) {
+                this.$list.first().addClass('on');
+            } else {
+                this.$list.first().width(this.o.activeSize);
+            }
             this.initEvent();
         },
         initEvent: function() {
@@ -29,6 +35,8 @@
             this.$list.on('mouseenter', function() {
                 var index = $(this).index();
                 if (index !== that.curIndex) {
+                    that.prevIndex = that.curIndex;
+                    that.curIndex = index;
                     that.accAnimation(index);
                 }
             })
@@ -36,23 +44,21 @@
         accAnimation: function(num) {
             this.o.beforeAnimation();
             var that = this;
-            this.$list.eq(num).stop(true).animate({
-                width: this.w * this.o.activeSize
-            }, this.o.speed, 'linear');
-            this.$list.eq(this.curIndex).stop(true).animate({
-                width: this.w
-            }, this.o.speed, 'linear', function() {
-                that.o.afterAnimation();
-            });
-            this.curIndex = num;
-        },
-
-        getCurIndex: function() {
-            return this.curIndex;
-        },
-
-        getCurElement: function() {
-            return this.$list.eq(this.curIndex);
+            if (this.o.css3Support) {
+                this.$list.eq(num).addClass('on').siblings().removeClass('on');
+                setTimeout(function() {
+                    that.o.afterAnimation();
+                }, that.o.speed + 20);
+            } else {
+                this.$list.eq(num).stop(true).animate({
+                    width: this.o.activeSize
+                }, this.o.speed, 'linear');
+                this.$list.eq(this.prevIndex).stop(true).animate({
+                    width: this.w
+                }, this.o.speed, 'linear', function() {
+                    that.o.afterAnimation();
+                });
+            }
         }
     };
 
@@ -61,7 +67,8 @@
         return this;
     }
 
-    $.each(['getCurIndex', 'getCurElement'], function(key, val) {
+    //暴露方法
+    $.each(['getIndex', 'getElement'], function(key, val) {
         $.fn.accordion[val] = function() {
             return acc[val].apply(acc, arguments);
         }
