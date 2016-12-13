@@ -7,5 +7,18 @@
     top: 0;
     left: 0;
     right: 0;
+    z-index: 2;
     padding-right: 30px;
+}
+.scroller-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    width: 1px;
+    height: 1px;
+    border: none;
+    outline: none;
+    opacity: 0;
+    filter: Alpha(opacity = 0);
 }

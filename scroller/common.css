@@ -14,6 +14,7 @@
     position: absolute;
     right: 0;
     top: 0;
+    z-index: 3;
     width: 20px;
     height: 300px;
     background: #bbb;
@@ -31,10 +32,4 @@
 }
 .p2 {
     margin: 20px 0 30px;
-}
-.scroller-input {
-    width: 0;
-    height: 0;
-    border: none;
-    outline: none;
 }
