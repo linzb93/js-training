@@ -30,7 +30,7 @@
         init: function() {
             var that = this;
             this.$this.addClass('scroller-container');
-            this.$this.children().wrapAll('<div class="scroller-wrapper" />');
+            this.$this.wrapInner('<div class="scroller-wrapper" />');
             this.$sWrapper = this.$this.children('.scroller-wrapper');
             //计算内容高度或宽度，如果小于显示区域高度或宽度，则不生成滚动条。
             this.isSmallWrapper = (this.o.dir === 'v' && this.$sWrapper.height() <= this.$this.height()) ||
@@ -137,7 +137,7 @@
             var that = this;
             this.$this.on('mousewheel DOMMouseScroll', function(e) {
                 e.preventDefault();
-                var wheelDirNum = (e.originalEvent.wheelDelta || e.originalEvent.detail) > 0 ? 1 : -1;
+                var wheelDirNum = (e.originalEvent.wheelDelta || -e.originalEvent.detail) > 0 ? 1 : -1;
                 var curBlockPos = that.$sBlock.offset().top - that.$sBar.offset().top - wheelDirNum * that.o.scrollGap / that.rate;
                 curBlockPos = that.fixBlockPos(curBlockPos);
                 that.doScroll(curBlockPos, true);
@@ -154,6 +154,7 @@
                 $input.trigger('focus');
             })
             $input.on('keyup', function(e) {
+                e.preventDefault();
                 if (that.o.dir === 'h') {
                     if (e.keyCode === LEFT_KEY) {
                         keyDirNum = -1;
@@ -216,7 +217,6 @@
         this.each(function() {
             new Scroller($(this), option);
         });
-
         return this;
     };
 })(jQuery);
