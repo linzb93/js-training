@@ -53,7 +53,7 @@
                         $('#demo li').eq(i).show();
                     }
                 },
-                afterTogglePage: function(page) {
+                setPage: function(page) {
                     $('#demo li').hide();
                     for (var i = (page - 1) * 5; i < page * 5; i++) {
                         $('#demo li').eq(i).show();

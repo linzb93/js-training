@@ -1,15 +1,13 @@
 (function($) {
     var defaults = {
         totalPage: 1,
-        init: function() {},
-        afterTogglePage: function() {}
+        setPage: function() {}
     }
     function Pager($this, option) {
         this.$this = $this;
         this.o = $.extend({}, defaults, option);
         this.curPage = 1;
 
-        this.o.init();
         this.createPage(1);
         this.initEvent();
     }
@@ -44,7 +42,7 @@
                 }
             });
             this.curPage = page;
-            this.o.afterTogglePage(page);
+            this.o.setPage(page);
         },
         initEvent: function() {
             var self = this;
