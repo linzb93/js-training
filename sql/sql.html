@@ -12,20 +12,13 @@
             age: 30
         }];
 
-        var mySql = jssql.create(demo);
-
-        mySql.add({
+        var mySql = sql.create(demo);
+        mySql.insert({
             name: 'Lee',
             age: 9
         });
 
-        mySql.update({age: 13}, {name: 'Mike'});
-
-        // mySql.delete({name: 'Jack'});
-
-        // mySql.empty();
-
-        document.write(mySql.select('age', {name: 'Lee'}));
+        console.log(mySql.select(item => item.age > 10).average('age'));
     </script>
 </body>
 </html>

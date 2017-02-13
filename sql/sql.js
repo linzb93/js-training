@@ -1,21 +1,9 @@
 (function() {
-    var jssql = {
+    var sql = {
         create: function(db) {
             return new Sql(db);
         }
     };
-
-    function doQuery(query, db, length) {
-        for(var k in query) {
-            var key1 = k;
-        }
-        for(var i = 0; i < length; i++) {
-            if (db[i][key1] === query[key1]) {
-                break;
-            }
-        }
-        return i;
-    }
 
     /*
      * @class Sql
@@ -25,43 +13,71 @@
         this.length = db.length;
     }
 
+    function SqlResult(result) {
+        this.result = result;
+    }
+
     Sql.prototype = {
-        //TODO:处理新增键名的问题
-        add: function(list) {
-            this.db.push(list);
+        insert: function() {
+            for (var i = 0, len = arguments.length; i < len; i++) {
+                this.db.push(arguments[i]);
+            }
             this.length = this.db.length;
         },
-        update: function(list, query) {
-            var i = doQuery(query, this.db, this.length);
-            for(var j in list) {
-                this.db[i][j] = list[j];
-            }
-        },
-        //TODO:处理一次传入多值的问题
-        select: function(key, query, operate) {
-            var i = doQuery(query, this.db, this.length);
-            if (arguments.length === 2) {
-                return this.db[i][key];
-            } else if (arguments.length === 3) {
-                switch (operate) {
-                    case 'sum':
-                    case 'average':
-                    case 'min':
-                    case 'max':
-                    default:
-                    break;
+        update: function(key, value, fn) {
+            for (var i  = 0, len = this.db.length; i < len; i++) {
+                if (fn(this.db[i])) {
+                    this.db[i][key] = value;
                 }
             }
-
         },
-        delete: function(query) {
-            var i = doQuery(query, this.db, this.length);
-            this.db.splice(i);
+        select: function(fn) {
+            var arr = [];
+            for (var i  = 0, len = this.db.length; i < len; i++) {
+                if(fn(this.db[i])) {
+                    arr.push(this.db[i]);
+                }
+            }
+            return new SqlResult(arr);
         },
-        empty: function() {
-            this.db = '';
+        delete: function(fn) {
+            for (var i  = 0, len = this.db.length; i < len; i++) {
+                if(fn(this.db[i])) {
+                    this.db.splice(i, 1);
+                }
+            }
         }
     };
 
-    window.jssql = jssql;
+    SqlResult.prototype = {
+        find: function(key) {
+            var arr = [];
+            for (var i  = 0, len = this.result.length; i < len; i++) {
+                arr.push(this.result[i][key]);
+            }
+            return arr;
+        },
+        sum: function(key) {
+            var sum = 0;
+            for (var i  = 0, len = this.result.length; i < len; i++) {
+                sum += this.result[i][key];
+            }
+            return sum;
+        },
+        average: function(key) {
+            var sum = 0;
+            for (var i  = 0, len = this.result.length; i < len; i++) {
+                sum += this.result[i][key];
+            }
+            return sum / len;
+        },
+        orderBy: function(key, isDesc, fn) {},
+        min: function(key, index) {},
+        max: function(key, index) {},
+        eq: function(key, index) {},
+        any: function(fn) {},
+        all: function(fn) {}
+    };
+
+    window.sql = sql;
 })();
