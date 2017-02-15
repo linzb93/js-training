@@ -1,0 +1,21 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <script src="dataObserver.js"></script>
+        <script>
+            DataObserver.alias('data');
+            data.defineProperty('a', {
+                value: 3,
+                set: function(name, value) {
+                    console.log(name + ' is ' + value);
+                },
+                get: function(name) {
+                    console.log('get ' + name);
+                }
+            });
+
+            console.log(data.get('a'));
+        </script>
+    </body>
+</html>

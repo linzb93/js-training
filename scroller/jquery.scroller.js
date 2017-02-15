@@ -54,6 +54,8 @@
             this.$sBar = this.$this.children('.scroller-bar');
             this.$sBlock = this.$sBar.children('.scroller-block');
 
+            this.sBarOffset = this.o.dir === 'v' ? this.$sBar.offset().top : this.$sBar.offset().left;
+
             this.initCalculate();
 
             if (!this.isSmallWrapper) {
@@ -108,8 +110,8 @@
             this.$sBlock.on('mousedown', function(e) {
                 var $this = $(this);
                 var gap = that.o.dir === 'v' ?
-                e.pageY - $(this).offset().top + that.$sBar.offset().top :
-                e.pageX - $(this).offset().left + that.$sBar.offset().left;
+                e.pageY - $(this).offset().top + that.sBarOffset :
+                e.pageX - $(this).offset().left + that.sBarOffset;
                 e.preventDefault();
                 $(this).on('selectstart', function() {
                     return false;
@@ -138,7 +140,7 @@
             this.$this.on('mousewheel DOMMouseScroll', function(e) {
                 e.preventDefault();
                 var wheelDirNum = (e.originalEvent.wheelDelta || -e.originalEvent.detail) > 0 ? 1 : -1;
-                var curBlockPos = that.$sBlock.offset().top - that.$sBar.offset().top - wheelDirNum * that.o.scrollGap / that.rate;
+                var curBlockPos = that.$sBlock.offset().top - that.sBarOffset - wheelDirNum * that.o.scrollGap / that.rate;
                 curBlockPos = that.fixBlockPos(curBlockPos);
                 that.doScroll(curBlockPos, true);
             });
@@ -163,7 +165,7 @@
                     }  else {
                         return;
                     }
-                    var curBlockPos = that.$sBlock.offset().left - that.$sBar.offset().left + keyDirNum * that.o.scrollGap / that.rate;
+                    var curBlockPos = that.$sBlock.offset().left - that.sBarOffset + keyDirNum * that.o.scrollGap / that.rate;
                 } else {
                     if (e.keyCode === UP_KEY) {
                         keyDirNum = -1;
@@ -172,7 +174,7 @@
                     }  else {
                         return;
                     }
-                    var curBlockPos = that.$sBlock.offset().top - that.$sBar.offset().top + keyDirNum * that.o.scrollGap / that.rate;
+                    var curBlockPos = that.$sBlock.offset().top - that.sBarOffset + keyDirNum * that.o.scrollGap / that.rate;
                 }
                 curBlockPos = that.fixBlockPos(curBlockPos);
                 that.doScroll(curBlockPos, true);
