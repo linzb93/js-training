@@ -4,8 +4,7 @@
     <body>
         <script src="dataObserver.js"></script>
         <script>
-            DataObserver.alias('data');
-            data.defineProperty('a', {
+            Data.defineProperty('a', {
                 value: 3,
                 set: function(name, value) {
                     console.log(name + ' is ' + value);
@@ -15,7 +14,7 @@
                 }
             });
 
-            console.log(data.get('a'));
+            console.log(Data.get('a'));
         </script>
     </body>
 </html>

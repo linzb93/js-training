@@ -13,13 +13,6 @@
     }
 
     var DataObserver = {
-        alias: function(name) {
-            if (window[name]) {
-                throw new Error(name + ' is exist');
-            } else {
-                window[name] = DataObserver;
-            }
-        },
         get: function(name) {
             initProperty(name);
             if (db[name].get) {
@@ -46,7 +39,10 @@
         defineProperty: function(name, obj) {
             initProperty(name);
             db[name] = extend(db[name], obj);
+        },
+        noConflict: function(name) {
+            window[name] = DataObserver;
         }
     };
-    window.DataObserver = DataObserver;
+    window.DataObserver = window.Data = DataObserver;
 })();
