@@ -1,0 +1,24 @@
+<html>
+<head>
+<style>
+    #box{
+        width: 100px;
+        height: 50px;
+        background: #000;
+        position: relative;
+        left: 100px;
+    }
+</style>
+</head>
+<body>
+<div id="box"></div>
+<script src="animate.js"></script>
+<script>
+    var box = document.getElementById('box');
+    new Animate(box, {
+        width: 300,
+        left: 200
+    }, 1600, ()=> {console.log('ok');});
+</script>
+</body>
+</html>
