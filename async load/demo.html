@@ -1,0 +1,21 @@
+<html>
+<head>
+<style>
+</style>
+</head>
+<body>
+<script src="use.js"></script>
+<script>
+    use.add('d3', 'https://cdn.bootcss.com/d3/4.7.3/d3.js');
+    use.add('ng', 'https://cdn.bootcss.com/angular.js/2.0.0-beta.17/angular2-all.umd.min.js', 'd3');
+    use.add('element', 'https://cdn.bootcss.com/element-ui/1.2.5/index.js', 'ng');
+
+    use('ng', function() {
+        console.log('ng load');
+    })
+    use('element', function() {
+        console.log('ele load');
+    });
+</script>
+</body>
+</html>
