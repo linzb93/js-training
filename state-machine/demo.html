@@ -1,0 +1,41 @@
+<html>
+<meta charset="utf-8">
+<head>
+    <style type="text/css">
+        #btn {
+            display: inline-block;
+            width: 120px;
+            height: 40px;
+            border: 1px solid #21a89e;
+            text-align: center;
+            line-height: 40px;
+        }
+    </style>
+</head>
+<body>
+    <a id="btn" href="javascript:;" title="">开始</a>
+    <script src="https://cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
+    <script src="jsm.js"></script>
+    <script>
+        var fsm = new StateMachine([
+        {
+            from: '开始',
+            to: '暂停',
+            cb() {
+                $('#btn').text('暂停')
+            }
+        }, {
+            from: '暂停',
+            to: '开始',
+            cb() {
+                $('#btn').text('开始')
+            }
+        }]);
+
+
+        $('#btn').click(function() {
+            fsm.next();
+        })
+    </script>
+</body>
+</html>
