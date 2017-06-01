@@ -198,57 +198,36 @@
         average: function(key) {
             return this.sum(key) / this._result.length;
         },
-        orderBy: function(key,isDesc, callback) {
+        orderBy: function(key,isDesc) {
             //目前只支持1个key
-            var arr = [];
-            var sortdResult = [];
-            var self = this;
-            if (arguments.length === 2) {
-                callback = isDesc;
-                isDesc = null;
-            }
-            callback = callback || null;
-
-            each(this._result, function(item) {
-                arr.push(item[key])
-            });
-            arr = !isDesc ? arr.sort(callback) : arr.reverse(callback);
-
-            each(arr, function(arrItem, arrIndex) {
-                each(self._result, true, function(resultItem, resultIndex) {
-                    if (resultItem[key] === arrItem) {
-                        sortdResult.push(resultItem);
-                        self._result.splice(resultIndex, 1);
-                    } else {
-                        return true;
-                    }
-                });
+            var sortdResult = this._result.sort(function(item1, item2) {
+                return !isDesc ?
+                    item1[key] - item2[key] :
+                    item2[key] - item1[key]
             });
 
             return sortdResult;
         },
-        min: function(key, callback) {
-            return this.eq(key, 0, callback);
+        min: function(key) {
+            return this.eq(key, 0);
         },
         max: function(key, callback) {
-            return this.eq(key, -1, callback);
+            return this.eq(key, -1);
         },
-        eq: function(key, index, callback) {
+        eq: function(key, index) {
             // index可取负数，表示从数组末尾往前选第-index个数。下面的take方法同理
-            callback = callback || null;
             index = index >= 0 ? index : this._result.length + index;
-            return this.orderBy(key, callback)[index];
+            return this.orderBy(key)[index];
         },
 
         /*
          * take和eq方法的区别:
          * eq是取数组的第index个数，take是取前/后index个数
          */
-        take: function(key, index, callback) {
-            callback = callback || null;
+        take: function(key, index) {
             return index >= 0 ?
-                this.orderBy(key, callback).slice(0, index) :
-                this.orderBy(key, callback).slice(index, -1);
+                this.orderBy(key).slice(0, index) :
+                this.orderBy(key).slice(index, -1);
         },
         some: function(callback) {
             each(this._result, function(item) {

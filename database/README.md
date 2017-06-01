@@ -111,7 +111,7 @@ function(item, index)类型：Function。两个参数第一个是数据库内数
 
 #### Result的方法
 
-#### find(keys) 
+#### find(keys)
 
 keys类型：String。要获取的数据键名。
 
@@ -141,57 +141,47 @@ key类型：String。要求平均数的数据键名。
 
 ---
 
-#### orderBy(key, [isDesc], [function(a, b)])
+#### orderBy(key, [isDesc])
 
 key类型：String。要求根据键名对搜索结果数据。
 
 isDesc类型：Boolean。默认为false，为true时逆序排列。
 
-function(a, b)类型：Function。orderBy方法是用的是Array的sort和reverse方法，排序有时需要传入函数，例如对整数进行比较。
-
 对搜索结果按照键名对应键值进行排序。返回排序后的搜索结果。
 
 ---
 
-#### min(key, [function(a, b)])
+#### min(key)
 
 key类型：String。要求根据键名对搜索结果数据。
-
-function(a, b)类型：Function。含义同orderBy方法的函数参数。
 
 返回按照键名对应键值排序后的数组首个元素，即最小值。
 
 ---
 
-#### max(key, [function(a, b)])
+#### max(key)
 
 key类型：String。要求根据键名对搜索结果数据。
-
-function(a, b)类型：Function。含义同orderBy方法的函数参数。
 
 返回按照键名对应键值排序后的数组最后一个元素，即最大值。
 
 ---
 
-#### eq(key, index, [function(a, b)])
+#### eq(key, index)
 
 key类型：String。要求根据键名对搜索结果数据。
 
 index类型：Number。获取排序后的数据索引值。
 
-function(a, b)类型：Function。含义同orderBy方法的函数参数。
-
 返回按照键名对应键值排序后的数组索引值对应的元素。
 
 ---
 
-#### take(key, index, [function(a, b)])
+#### take(key, index)
 
 key类型：String。要求根据键名对搜索结果数据。
 
 index类型：Number。获取排序后的数据索引值及之前/之后的数据。
-
-function(a, b)类型：Function。含义同orderBy方法的函数参数。
 
 返回按照键名对应键值排序后的数组索引值对应的元素及之前/之后的元素。若index不小于0，返回之前的元素，否则返回之后的元素。
 
