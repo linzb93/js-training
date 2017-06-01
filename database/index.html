@@ -1,0 +1,23 @@
+<html>
+<head></head>
+<body>
+    <script src="database.js"></script>
+    <script>
+        var store = [{
+            name: 'Mike',
+            age: 19
+        }, {
+            name: 'Jack',
+            age: 30
+        }];
+
+        var db = new DB(store);
+        db.push({
+            name: 'Lee',
+            age: 9
+        });
+
+        console.log(db.filter('name', item => item.age > 10));
+    </script>
+</body>
+</html>
