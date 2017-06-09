@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+</head>
+<body>
+    <script>
+        function Middleware() {
+            this.cache = [];
+            this.idx = 0;
+            this.waitToExec = false;
+        };
+
+        Middleware.prototype = {
+            use(cb) {
+                this.cache.push(cb);
+                var next = () => {
+                    this.idx++;
+                    if (this.cache[this.idx]) {
+                        this.cache[this.idx](next);
+                    } else {
+                        this.waitToExec = true;
+                    }
+                };
+                if (this.cache.length === 1) {
+                    this.cache[this.idx](next);
+                }
+                if (this.waitToExec) {
+                    this.cache[this.idx](next);
+                    this.waitToExec = false;
+                }
+            }
+        }
+
+
+       var app = new Middleware();
+
+       app.use((next) => {
+           setTimeout(() => {
+               console.log(1);
+               next();
+           }, 500)
+       });
+
+       app.use((next) => {
+           setTimeout(() => {
+               console.log(2);
+               next();
+           }, 1000)
+       });
+
+       app.use((next) => {
+           console.log(3);
+           next();
+       });
+
+
+       setTimeout(() => {
+           app.use((next) => {
+            console.log(4);
+        });
+       }, 3000)
+    </script>
+</body>
+</html>
