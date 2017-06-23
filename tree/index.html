@@ -11,33 +11,46 @@
         var items = [
           {
             title:1,
+            url:1,
             childrens: [
             {
-              title: 11
+              title: 11,
+              url:11,
             }, {
               title: 12,
+              url: 12,
               childrens: [
               {
                 title: 121,
+                url: 121,
                 childrens: [
                 {
-                  title: 1211
+                  title: 1211,
+                  url: 1211
                 }]
               }, {
-                title: 122
+                title: 122,
+                url: 122,
               }, {
                 title: 123,
+                url: 123,
                 childrens: [
                 {
-                  title: 1231
+                  title: 1231,
+                  url: 1231
                 }, {
-                  title: 1232
+                  title: 1232,
+                  url: 1232
                 }]
+              }, {
+                  title: 124,
+                  url: 124
               }]
             }]
           }];
         $('#tree').tree({
-            items
+            items,
+            template: '<ul class="list{{depth}}"><li><span class="box">{{url}}</span><h2>{{title}}</h2>{{childrens}}</li></ul>'
         });
     </script>
 </body>

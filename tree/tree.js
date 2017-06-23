@@ -1,5 +1,12 @@
 (function($) {
-    var defaults = {};
+    var defaults = {
+        items: [],
+        template: '<ul><li><a href="{{url}}">{{title}}</a>{{childrens}}</li></ul>',
+    };
+
+    function unwrap(str) {
+        return str.slice(2,-2);
+    }
 
     function Tree($this, option) {
         this.opt = $.extend({}, defaults, option);
@@ -13,20 +20,31 @@
 
     Tree.prototype = {
         _init: function() {
-            this._render(this.opt.items);
+            this._render(this.opt.items, 1);
         },
-        _render: function(item) {
+        _render: function(item, depth) {
             var i = 0;
             var len = item.length;
             while(i < len) {
-                this._treeHtml += '<ul>\
-                                    <li>\
-                                        <a href="#">' + item[i].title + '</a>';
-                if ('childrens' in item[i]) {
-                    this._render(item[i].childrens);
+                var segmentTemp = this.opt.template.split('{{childrens}}');
+                var prevHtml = segmentTemp[0];
+                var nextHtml = segmentTemp[1];
+                this._treeHtml += prevHtml.replace(/{{[^}]*}}/g, function(match) {
+                    if (unwrap(match) === 'depth') {
+                        return depth;
+                    }
+                    return item[i][unwrap(match)];
+                });
+                if (item[i].hasOwnProperty('childrens')) {
+                    this._render(item[i].childrens, depth + 1);
                 }
                 i++;
-                this._treeHtml += '</li></ul>';
+                this._treeHtml += nextHtml.replace(/{{[^}]*}}/g, function(match) {
+                    if (unwrap(match) === 'depth') {
+                        return depth;
+                    }
+                    return item[i][unwrap(match)];
+                });
             }
         },
         html: function() {
