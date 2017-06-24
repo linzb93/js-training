@@ -4,8 +4,24 @@
         template: '<ul><li><a href="{{url}}">{{title}}</a>{{childrens}}</li></ul>',
     };
 
+    function assert(condition, msg) {
+        if (!condition) {
+            throw new Error(msg);
+        }
+    }
+
+    //去掉模板字符串里的属性外面的'{{ }}'
     function unwrap(str) {
         return str.slice(2,-2);
+    }
+
+    //avoid XSS
+    function strFormat(str) {
+        return str.replace(/&/g, '&amp;')//&
+                  .replace(/</g, '&lt;')//左尖号
+                  .replace(/>/g, '&gt;')//右尖号
+                  .replace(/"/g, '&quot;')//双引号"
+                  .replace(/'/g, '&#039;');//IE下不支持&apos;'
     }
 
     function Tree($this, option) {
@@ -29,22 +45,23 @@
                 var segmentTemp = this.opt.template.split('{{childrens}}');
                 var prevHtml = segmentTemp[0];
                 var nextHtml = segmentTemp[1];
-                this._treeHtml += prevHtml.replace(/{{[^}]*}}/g, function(match) {
-                    if (unwrap(match) === 'depth') {
-                        return depth;
-                    }
-                    return item[i][unwrap(match)];
-                });
+                function match(html) {
+                    return html.replace(/{{[^{}]*}}/g, function(match) {
+                        var mat = unwrap(match);
+                        if (mat === 'depth') {
+                            return depth;
+                        }
+                        assert(item[i].hasOwnProperty(mat), 'property ' + mat + ' is not exist!');
+                        var ret = item[i][mat].toString();
+                        return strFormat(ret);
+                    })
+                }
+                this._treeHtml += match(prevHtml);
                 if (item[i].hasOwnProperty('childrens')) {
                     this._render(item[i].childrens, depth + 1);
                 }
                 i++;
-                this._treeHtml += nextHtml.replace(/{{[^}]*}}/g, function(match) {
-                    if (unwrap(match) === 'depth') {
-                        return depth;
-                    }
-                    return item[i][unwrap(match)];
-                });
+                this._treeHtml += match(nextHtml);
             }
         },
         html: function() {
