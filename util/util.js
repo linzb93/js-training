@@ -4,7 +4,7 @@ util.debounce = function(func, wait, immediate) {
     var timeout, args, context, timestamp, result;
 
     var later = function() {
-        var last = _.now() - timestamp;
+        var last = new Date() - timestamp;
 
         if (last < wait && last >= 0) {
             timeout = setTimeout(later, wait - last);
@@ -20,7 +20,7 @@ util.debounce = function(func, wait, immediate) {
     return function() {
         context = this;
         args = arguments;
-        timestamp = _.now();
+        timestamp = new Date();
         var callNow = immediate && !timeout;
         if (!timeout) timeout = setTimeout(later, wait);
         if (callNow) {
@@ -38,13 +38,13 @@ util.throttle = function(func, wait, options) {
     var previous = 0;
     if (!options) options = {};
     var later = function() {
-        previous = options.leading === false ? 0 : _.now();
+        previous = options.leading === false ? 0 : new Date();
         timeout = null;
         result = func.apply(context, args);
         if (!timeout) context = args = null;
     };
     return function() {
-        var now = _.now();
+        var now = new Date();
         if (!previous && options.leading === false) previous = now;
         var remaining = wait - (now - previous);
         context = this;
@@ -98,20 +98,20 @@ util.every = function(arr, cb) {
 
 util.reduce = function(arr, cb, initial) {
     var ret = initial || '';
-    $.each(function(index, item)) {
+    $.each(arr, function(index, item) {
         ret = cb(item);
-    }
+    });
     return ret;
 };
 
 util.indexOf = function(arr, staff) {
     var i = -1;
-    $.each(index, item) {
-        if (staff === item) {
+    $.each(arr, function(index, item) {
+        if (item === staff) {
             i = index;
             return false;
         }
-    }
+    });
     return i;
 };
 
