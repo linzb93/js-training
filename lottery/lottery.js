@@ -16,7 +16,7 @@
             var count = calculateEachNum();
             var hGap = Math.floor((width - cellWidth * count.h) / (count.h - 1));
             var vGap = Math.floor((height - cellHeight * count.v) / (count.v - 1));
-            this.children().each(function(index) {
+            ctx.children().each(function(index) {
                 var left = 0;
                 var top = 0;
                 if (index < length / 2) {
@@ -25,11 +25,11 @@
                         top = 0;
                     } else {
                         left = (cellWidth + hGap) * (count.h - 1);
-                        top = (cellHeight + vGap) * (index - count.h);
+                        top = (cellHeight + vGap) * (index - count.h + 1);
                     }
                 } else {
-                    if (index < (count.h * 2 + count.v)) {
-                        left = (cellWidth + hGap) * (length - index - count.v);
+                    if (index < (count.h * 2 + count.v - 2)) {
+                        left = (cellWidth + hGap) * (length - index - count.v + 1);
                         top = (cellHeight + vGap) * (count.v - 1);
                     } else {
                         left = 0;
@@ -45,21 +45,36 @@
 
         function calculateEachNum() {
             var hCount = hMax;
-            var vCount = (length - hCount) / 2 + 2;
+            var vCount = (length - hCount * 2) / 2 + 2;
 
             var hGap = Math.floor((width - cellWidth * hCount) / (hCount - 1));
             var vGap = Math.floor((height - cellHeight * vCount) / (vCount - 1));
-            while(hGap < vGap) {
+            vGap = vGap < 0 ? 9999 : vGap;
+            if (hGap === vGap) {
+                return {
+                    h: hCount,
+                    v: vCount
+                }
+            }
+            while(hGap <= vGap) {
                 hCount -= 1;
                 vCount += 1;
                 hGap = Math.floor((width - cellWidth * hCount) / (hCount - 1));
                 vGap = Math.floor((height - cellHeight * vCount) / (vCount - 1));
+                vGap = vGap < 0 ? 9999 : vGap;
+            }
+            if (hGap === vGap) {
+                return {
+                    h: hCount,
+                    v: vCount
+                }
             }
             return {
-                h: hCount,
-                v: vCount
+                h: hCount + 1,
+                v: vCount - 1
             };
         }
+        initLayout();
 
         function lotteryBegin() {}
 
