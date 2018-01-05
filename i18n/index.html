@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div>
+      <p data-i18n="name"></p>
+      <p data-i18n="country"></p>
+    </div>
+    <script src="http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
+    <script src="i18n.js"></script>
+    <script>
+      var dic = {
+        name: {
+          cn: '小明',
+          en: 'xiaoming'
+        },
+        country: {
+          cn: '中国',
+          en: 'China'
+        }
+      };
+      $('body').i18n(dic, 'en');
+    </script>
+</body>
