@@ -4,8 +4,6 @@
                              || window.webkitRequestAnimationFrame 
                              || window.msRequestAnimationFrame;
 
-    var Tween = {};
-
     var easing = {
         swing: function(p) {
             return 0.5 - Math.cos( p * Math.PI ) / 2
@@ -28,6 +26,12 @@
         }
     };
 
+    function isArray(obj) {
+        return Object.prototype.toString.call(obj) === '[Object Array]';
+    }
+
+    var Tween = {};
+
     Tween.init = function(obj) {
         this.startObj = obj;
         this.endObj = {};
@@ -36,6 +40,9 @@
         this.duration = 0;
         this.cbStore = {};
     }
+
+    //同时执行所有的tween实例
+    Tween.update = function() {};
 
     var proto = Tween.init.prototype;
 
@@ -79,6 +86,16 @@
         return this;
     };
 
+    //上一个tween实例执行完后执行的下一个tween实例。
+    proto.next = function(tweenInstance) {
+        if (isArray(tweenInstance)) {
+            //
+        } else {
+            //
+        }
+        return this;
+    };
+
     proto.on = function(event, callback) {
         if (!callback || typeof callback !== 'function') {
             return;
@@ -88,6 +105,21 @@
         this.cbStore[event] = callback;
         return this;
     };
+
+    //重复
+    proto.repeat = function(times) {
+        if (times < 1 || parseInt(times) !== times) {
+            return;
+        } else if (times === Infinity) {
+            //
+        } else {
+            //
+        }
+        return this;
+    }
+
+    //来回
+    proto.yoyo = function() {}
 
     window.Tween = Tween;
 })(jQuery);
