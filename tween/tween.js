@@ -8,41 +8,49 @@
         swing: function(p) {
             return 0.5 - Math.cos( p * Math.PI ) / 2
         },
-        linear: function(t) {
-            return t;
-        },
-        easeOutBounce: function(x) {
-            var n1 = 7.5625,
-            d1 = 2.75;
-            if ( x < 1/d1 ) {
-                return n1*x*x;
-            } else if ( x < 2/d1 ) {
-                return n1*(x-=(1.5/d1))*x + .75;
-            } else if ( x < 2.5/d1 ) {
-                return n1*(x-=(2.25/d1))*x + .9375;
-            } else {
-                return n1*(x-=(2.625/d1))*x + .984375;
-            }
+        linear: function(p) {
+            return p;
         }
     };
 
     function isArray(obj) {
-        return Object.prototype.toString.call(obj) === '[Object Array]';
+        return Object.prototype.toString.call(obj) === '[object Array]';
+    }
+
+    function each(items, callback) {
+        for (var i = 0, len = items.length; i < len; i++) {
+            callback(items[i], i);
+        }
+    }
+
+    function bind(callback, ctx) {
+        return function() {
+            return callback.apply(ctx, [].slice.call(arguments));
+        };
     }
 
     var Tween = {};
 
+    Tween.store = [];
+
     Tween.init = function(obj) {
         this.startObj = obj;
         this.endObj = {};
-        this.startTime = +new Date();
+        this.startTime = null;
         this.easing = 'swing';
         this.duration = 0;
         this.cbStore = {};
+        this.nextTween = [];
+
+        Tween.store.push(this);
     }
 
     //同时执行所有的tween实例
-    Tween.update = function() {};
+    Tween.startAll = function() {
+        each(Tween.store, function(item) {
+            item.start();
+        });
+    };
 
     var proto = Tween.init.prototype;
 
@@ -53,35 +61,48 @@
     }
 
     proto.start = function() {
-        var ctx = this;
+        this.startTime = +new Date();
         if (this.cbStore.start) {
             this.cbStore.start();
         }
-
-        var step = {};
-
-        function doAnimation() {
-            var curTime = +new Date();
-            var deltaTime = curTime - ctx.startTime;
-            if (deltaTime <= ctx.duration)  {
-                var obj = {};
-                for (var i in ctx.endObj) {
-                    obj[i] = ctx.startObj[i] + (ctx.endObj[i] - ctx.startObj[i]) * easing[ctx.easing](deltaTime / ctx.duration);
-                }
-                if (ctx.cbStore.update) {
-                    ctx.cbStore.update(obj);
-                }
-                requestAnimationFrame(doAnimation);
-            } else {
-                ctx.cbStore.update(ctx.endObj);
-                return;
-            }
-        }
-        doAnimation();
+        this._doAnimation();
         return this;
     };
 
-    proto.setAnimationType = function(type) {
+    proto._doAnimation = function() {
+        var curTime = +new Date();
+        var deltaTime = curTime - this.startTime;
+        var easingFunc = typeof this.easing === 'function'
+            ? this.easing
+            : easing[this.easing];
+        if (!easingFunc) {
+            throw new Error('Easing function is not defined');
+        }
+        if (deltaTime <= this.duration)  {
+            var obj = {};
+            for (var i in this.endObj) {
+                obj[i] = this.startObj[i] + (this.endObj[i] - this.startObj[i]) * easingFunc(deltaTime / this.duration);
+            }
+            if (this.cbStore.update) {
+                this.cbStore.update(obj);
+            }
+            requestAnimationFrame(bind(this._doAnimation, this));
+        } else {
+            this.cbStore.update(this.endObj);
+            if (this.cbStore.end) {
+                this.cbStore.end();
+            }
+            if (this.nextTween.length) {
+                each(this.nextTween, function(item) {
+                    item.start();
+                });
+            }
+            return;
+        }
+    };
+
+    //设置动画函数曲线
+    proto.setEasing = function(type) {
         this.easing = type;
         return this;
     };
@@ -89,10 +110,11 @@
     //上一个tween实例执行完后执行的下一个tween实例。
     proto.next = function(tweenInstance) {
         if (isArray(tweenInstance)) {
-            //
+            this.nextTween = this.nextTween.concat(tweenInstance);
         } else {
-            //
+            this.nextTween.push(tweenInstance);
         }
+        
         return this;
     };
 
