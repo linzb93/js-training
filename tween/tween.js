@@ -40,7 +40,11 @@
         this.easing = 'swing';
         this.duration = 0;
         this.cbStore = {};
-        this.nextTween = [];
+        this.nextTween = []; //当前tween执行完成后要执行的所有tween
+        this.timeId = null; //requestAnimationFrame在低版本浏览器不支持，要换成setTimeout
+        this.repeatTimes = 1; //动画重复的次数
+        this.isYoyo = false; //是否是来回执行的动画
+        this.sequence = true; //当前是否是顺序执行的动画
 
         Tween.store.push(this);
     }
@@ -78,6 +82,9 @@
         if (!easingFunc) {
             throw new Error('Easing function is not defined');
         }
+        if (this.timeId) {
+            clearTimeout(this.timeId);
+        }
         if (deltaTime <= this.duration)  {
             var obj = {};
             for (var i in this.endObj) {
@@ -86,12 +93,33 @@
             if (this.cbStore.update) {
                 this.cbStore.update(obj);
             }
-            requestAnimationFrame(bind(this._doAnimation, this));
+            if (requestAnimationFrame) {
+                requestAnimationFrame(bind(this._doAnimation, this));
+            } else {
+                this.timeId = setTimeout(bind(function() {
+                    this._doAnimation();
+                }, this), 16);
+            }
+            
         } else {
-            this.cbStore.update(this.endObj);
+            this.cbStore.update(this.endObj); //修复动画执行完毕后离结果有偏差的问题
             if (this.cbStore.end) {
                 this.cbStore.end();
             }
+            if (this.isYoyo) {
+                var temp = this.startObj;
+                this.startObj = this.endObj;
+                this.endObj = temp;
+                this.sequence = !this.sequence;
+                // console.log(this.startObj, this.endObj)
+            }
+            if (!this.isYoyo || this.sequence) {
+                this.repeatTimes--;
+            }
+            if (this.repeatTimes) {
+                this.start();
+            }
+            
             if (this.nextTween.length) {
                 each(this.nextTween, function(item) {
                     item.start();
@@ -128,20 +156,21 @@
         return this;
     };
 
-    //重复
+    //重复动画
     proto.repeat = function(times) {
-        if (times < 1 || parseInt(times) !== times) {
-            return;
-        } else if (times === Infinity) {
-            //
+        if ((times < 0 || parseInt(times) !== times) && times !== Infinity) {
+            throw new Error('times need to be Integer');
         } else {
-            //
+            this.repeatTimes = times;
         }
         return this;
-    }
+    };
 
-    //来回
-    proto.yoyo = function() {}
+    //是否来回执行动画
+    proto.yoyo = function(isYoyo) {
+        this.isYoyo = isYoyo;
+        return this;
+    }
 
     window.Tween = Tween;
 })(jQuery);
