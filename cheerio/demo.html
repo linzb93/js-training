@@ -1,0 +1,14 @@
+<html>
+<head>
+<style>
+</style>
+</head>
+<body>
+<script src="index.js"></script>
+<script>
+    var h = '<div id="box" class="box2 box3" style="margin:30px;">3454</div>';
+    var cheerInstance = cheerio(h);
+    console.log(cheerInstance.attr('id'), cheerInstance.attr('style'), cheerInstance.attr('class'));
+</script>
+</body>
+</html>
