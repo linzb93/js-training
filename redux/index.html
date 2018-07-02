@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script src="index.js"></script>
+    <script>
+        function counter(state = 10, action) {
+            if (action.type === 'INCREASE') {
+                return state + 1;
+            } else if (action.type === 'DECREASE') {
+                return state - 1;
+            }
+            return state;
+        }
+
+        function vis(state = false, action) {
+            if (action.type === 'CHANGE') {
+                return !state;
+            }
+            return state;
+        }
+
+        var reducer = Redux.combineReducers({
+            counter,
+            vis
+        });
+
+        var store = Redux.createStore(reducer);
+
+        // state = {
+        //     counter: 10,
+        //     vis: false
+        // };
+        store.subscribe(() => {
+            console.log(store.getState());
+        });
+
+        store.dispatch({type: 'CHANGE'});
+    </script>
+</body>
+</html>
