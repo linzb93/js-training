@@ -31,16 +31,16 @@
         });
 
         var store = Redux.createStore(reducer);
-
-        // state = {
-        //     counter: 10,
-        //     vis: false
-        // };
         store.subscribe(() => {
             console.log(store.getState());
         });
 
         store.dispatch({type: 'CHANGE'});
+        store.dispatch({type: 'INCREASE'});
+        store.dispatch({type: 'INCREASE'});
+        store.dispatch({type: 'INCREASE'});
+        store.dispatch({type: 'CHANGE'});
+        store.dispatch({type: 'INCREASE'});
     </script>
 </body>
 </html>
