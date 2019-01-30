@@ -5,7 +5,7 @@
     
     //参数默认值
     var defaults = {
-        scrollGap: 50,
+        scrollGap: 50, // 内容区滚动的距离，不是滚动条滚动的距离
         speed: 300,
         mousewheel: false,
         key: false,
@@ -33,7 +33,7 @@
             this.createBar();
             this.initEvent();
             if (this.o.resetAfterImgLoad) {
-                this.$this.find('img').on('load', function() {
+                $(window).on('load', function() {
                     that.reset();
                 });
             }
@@ -57,7 +57,7 @@
             } else {
                 this.$sBar.hide();
             }
-            this.sBarOffset = this.$sBar.offset().top;
+
             this.maxMove = this.$sBar.height() - this.$sBlock.height();
             this.rate = (this.$sWrapper.height() - this.$this.height()) / this.maxMove + 0.01;
         },
@@ -79,8 +79,8 @@
             });
             
             //自定义事件
-            this.$this.on('scroller.scrollTo', function(e, pos, useAnimate/* Boolean, 下同 */) {
-                that.doScroll(pos, useAnimate);
+            this.$this.on('scroller.scrollTo', function(e, blockPos, useAnimate/* Boolean, 下同 */) {
+                that.doScroll(blockPos, useAnimate);
             });
             this.$this.on('scroller.reset', function() {
                 that.reset();
@@ -98,7 +98,7 @@
             var that = this;
             this.$sBlock.on('mousedown', function(e) {
                 var $this = $(this);
-                var gap = e.pageY - $(this).offset().top + that.sBarOffset;
+                var gap = e.pageY - $(this).offset().top + that.$sBar.offset().top;
                 e.preventDefault();
                 $(this).on('selectstart', function() {
                     return false;
@@ -127,7 +127,7 @@
             this.$this.on('mousewheel DOMMouseScroll', function(e) {
                 e.preventDefault();
                 var wheelDirNum = (e.originalEvent.wheelDelta || -e.originalEvent.detail) > 0 ? 1 : -1;
-                var curBlockPos = that.$sBlock.offset().top - that.sBarOffset - wheelDirNum * that.o.scrollGap / that.rate;
+                var curBlockPos = that.$sBlock.offset().top - that.$sBar.offset().top - wheelDirNum * that.o.scrollGap / that.rate;
                 curBlockPos = that.fixBlockPos(curBlockPos);
                 that.doScroll(curBlockPos, true);
             });
@@ -151,7 +151,7 @@
                 }  else {
                     return;
                 }
-                var curBlockPos = that.$sBlock.offset().top - that.sBarOffset + keyDirNum * that.o.scrollGap / that.rate;
+                var curBlockPos = that.$sBlock.offset().top - that.$sBar.offset().top + keyDirNum * that.o.scrollGap / that.rate;
                 curBlockPos = that.fixBlockPos(curBlockPos);
                 that.doScroll(curBlockPos, true);
             });
@@ -178,9 +178,9 @@
         },
         
         // 执行滚动
-        doScroll: function(pos, useAnimate) {
-            var blockCssObj = {top: pos};
-            var wrapperCssObj = {top: pos * -this.rate};
+        doScroll: function(blockPos, useAnimate) {
+            var blockCssObj = {top: blockPos};
+            var wrapperCssObj = {top: blockPos * -this.rate};
             var speed = useAnimate ? this.o.speed : 0;
             this.$sBlock.stop(true).animate(blockCssObj, speed);
             this.$sWrapper.stop(true).animate(wrapperCssObj, speed);
