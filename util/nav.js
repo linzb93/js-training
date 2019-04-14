@@ -1,3 +1,4 @@
+// 电梯式导航
 var winW = $(window).width();
 var winH = $(window).height();
 var bodyH = $('body').height();
