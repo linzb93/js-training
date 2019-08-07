@@ -84,6 +84,19 @@
         return results == null ? "": decodeURIComponent(results[1]);
     };
 
+    // 插入url的query
+    util.insertParameterByName = function(key,value, afterName) {
+      if (location.search.indexOf(afterName + '=') === -1) {
+        console.log('没找到');
+      } else {
+        var searchRet = location.search;
+        var reg = new RegExp(afterName + '=[^&#]*');
+        var index = location.search.search(reg);
+        var length = reg.exec(searchRet).length;
+        return searchRet.slice(0, index + length) + '&' + key + '=' + value + searchRet.slice(index + length);
+      }
+    }
+
     // 浏览器版本检测
     util.support = {
         userAgent: navigator.userAgent.toLocaleLowerCase(),
